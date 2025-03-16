@@ -1,3 +1,20 @@
+<script setup>
+import { computed } from 'vue';
+import { useRaceStore } from '@/stores/raceStore.js';
+
+const raceStore = useRaceStore();
+
+const buttonText = computed(() => (raceStore.raceStarted ? 'Pause' : 'Start'));
+
+const handleGenerateProgram = () => {
+    raceStore.generateProgram();
+};
+
+const handleStartPause = () => {
+  raceStore.startRace();
+};
+</script>
+
 <template>
     <header class="bg-white">
         <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
@@ -16,8 +33,8 @@
                 <a href="https://linkedin.com/in/soltancode" target="_blank" class="text-sm/6 font-semibold text-gray-900 hover:text-gray-500">LinkedIn</a>
             </div>
             <div class="flex flex-col lg:flex-row lg:flex-1 lg:justify-end gap-2">
-                <a href="#" class="text-sm font-semibold text-gray-900 bg-gray-300/50 hover:bg-gray-300 px-3 py-1 rounded-full">Generate Program</a>
-                <a href="#" class="text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-full">Start / Pause</a>
+                <button @click="handleGenerateProgram" class="text-sm font-semibold text-gray-900 bg-gray-300/50 hover:bg-gray-300 px-3 py-1 rounded-full">Generate Program</button>
+                <button @click="handleStartPause" class="text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-full">{{ buttonText }}</button>
             </div>
         </nav>
     </header>
