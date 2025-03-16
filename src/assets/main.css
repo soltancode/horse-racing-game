@@ -1,1 +1,5 @@
 @import 'tailwindcss';
+
+.horse-list {
+    max-height: 560px;
+}
