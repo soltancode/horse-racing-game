@@ -9,6 +9,15 @@ const buttonText = computed(() => (raceStore.raceStarted ? 'Pause' : 'Start'));
 
 const handleGenerateProgram = () => {
     raceStore.generateProgram();
+
+    raceStore.results = [
+    { round: 1, winnerHorses: [] },
+    { round: 2, winnerHorses: [] },
+    { round: 3, winnerHorses: [] },
+    { round: 4, winnerHorses: [] },
+    { round: 5, winnerHorses: [] },
+    { round: 6, winnerHorses: [] },
+  ];
 };
 
 const handleStartPause = () => {
@@ -25,7 +34,6 @@ const handleStartPause = () => {
                         <span class="text-lg font-bold">Horse Racing Game</span>
                         <span class="text-xs text-gray-500">Developed by soltancode</span>
                     </div>
-                    <!-- <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt=""> -->
                 </a>
             </div>
             <div class="hidden lg:flex lg:gap-x-12">

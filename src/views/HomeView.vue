@@ -1,10 +1,10 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useRaceStore } from '@/stores/raceStore.js';
-import HorseList from '@/components/HorseList.vue';
-import RunningHorses from '@/components/RunningHorses.vue';
-import ProgramList from '@/components/ProgramList.vue';
-import ResultsList from '@/components/ResultsList.vue';
+import HorseList from '@/components/sections/HorseList.vue';
+import RunningHorses from '@/components/sections/RunningHorses.vue';
+import ProgramList from '@/components/program/ProgramList.vue';
+import ResultsList from '@/components/sections/ResultsList.vue';
 
 const raceStore = useRaceStore();
 

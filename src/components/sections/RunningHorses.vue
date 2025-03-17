@@ -1,5 +1,5 @@
 <script setup>
-import HorseRunning from '@/components/HorseRunning.vue';
+import HorseRunning from '@/components/horse/HorseRunning.vue';
 import { useRaceStore } from '@/stores/raceStore.js';
 
 const raceStore = useRaceStore();
