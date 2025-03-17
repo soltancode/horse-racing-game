@@ -76,7 +76,9 @@ export const useRaceStore = defineStore('raceStore', () => {
           ) {
             clearInterval(raceInterval)
             raceStarted.value = false
-            currentRound.value++
+            if (currentRound.value !== 5) {
+                currentRound.value++
+            }
           }
 
           return { ...horse, start: newStart }
