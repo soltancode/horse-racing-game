@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useRaceStore } from '@/stores/raceStore.js';
+import { PlayIcon, PauseIcon } from '@heroicons/vue/24/solid'
 
 const raceStore = useRaceStore();
 
@@ -34,7 +35,7 @@ const handleStartPause = () => {
             </div>
             <div class="flex flex-col lg:flex-row lg:flex-1 lg:justify-end gap-2">
                 <button @click="handleGenerateProgram" class="text-sm font-semibold text-gray-900 bg-gray-300/50 hover:bg-gray-300 px-3 py-1 rounded-full">Generate Program</button>
-                <button @click="handleStartPause" class="text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-full">{{ buttonText }}</button>
+                <button @click="handleStartPause" class="text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-full flex items-center"><PlayIcon v-if="!raceStore.raceStarted" class="size-3 mr-1" /><PauseIcon v-if="raceStore.raceStarted" class="size-3 mr-1" /> {{ buttonText }}</button>
             </div>
         </nav>
     </header>

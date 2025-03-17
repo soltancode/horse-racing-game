@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
 .horse-list {
-    max-height: 656px;
+    max-height: 600px;
+}
+
+.horse {
+    transition: all 0.6s;
 }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 export const useRaceStore = defineStore('raceStore', () => {
   const horses = ref([
@@ -25,7 +25,7 @@ export const useRaceStore = defineStore('raceStore', () => {
     { name: 'Velvet Storm', condition: 82, color: 'Purple', start: 0 },
   ])
 
-  const currentRound = ref(0);
+  const currentRound = ref(0)
 
   const rounds = ref([
     { round: 1, distance: 1200, selectedHorses: [] },
@@ -34,7 +34,7 @@ export const useRaceStore = defineStore('raceStore', () => {
     { round: 4, distance: 1800, selectedHorses: [] },
     { round: 5, distance: 2000, selectedHorses: [] },
     { round: 6, distance: 2200, selectedHorses: [] },
-  ]);
+  ])
 
   const results = ref([
     { round: 1, winnerHorses: [] },
@@ -45,16 +45,9 @@ export const useRaceStore = defineStore('raceStore', () => {
     { round: 6, winnerHorses: [] },
   ])
 
-  const selectedTenHorses = ref([])
   const raceStarted = ref(false)
-  let raceInterval = null
 
-  const generateHorses = () => {
-    selectedTenHorses.value = [...horses.value]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 10)
-      .map((horse) => ({ ...horse, start: 0 }))
-  }
+  let raceInterval = null
 
   const startRace = () => {
     if (raceStarted.value) {
@@ -62,36 +55,49 @@ export const useRaceStore = defineStore('raceStore', () => {
       raceStarted.value = false
     } else {
       raceStarted.value = true
+
       raceInterval = setInterval(() => {
-        selectedTenHorses.value = selectedTenHorses.value.map((horse) => {
-          return { ...horse, start: horse.start + Math.random() * 5 }
+        rounds.value[currentRound.value].selectedHorses = rounds.value[
+          currentRound.value
+        ].selectedHorses.map((horse) => {
+            let newStart = horse.start;
+            if (horse.start < 90) {
+                newStart = horse.start + Math.random() * 5
+      
+                if (newStart >= 90) {
+                  newStart = 90
+                  results.value[currentRound.value].winnerHorses.push({ ...horse, start: newStart })
+                }
+            }
+
+          if (
+            results.value[currentRound.value].winnerHorses.length ===
+            rounds.value[currentRound.value].selectedHorses.length
+          ) {
+            clearInterval(raceInterval)
+            raceStarted.value = false
+            currentRound.value++
+          }
+
+          return { ...horse, start: newStart }
         })
-        if (selectedTenHorses.value.some((horse) => horse.start >= 100)) {
-          clearInterval(raceInterval)
-          raceStarted.value = false
-          updateResults()
-        }
       }, 200)
     }
   }
 
-  const updateResults = () => {
-    const sortedHorses = [...selectedTenHorses.value].sort((a, b) => b.start - a.start)
-    results.value[currentRound.value].winnerHorses = sortedHorses.slice(0, 3)
-    currentRound.value = (currentRound.value + 1) % rounds.value.length
-  }
-
-  const sortedHorses = computed(() => {
-    return [...selectedTenHorses.value].sort((a, b) => b.start - a.start)
-  })
-
   const generateProgram = () => {
-    rounds.value.forEach(round => {
-      round.selectedHorses = [...horses.value]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 10)
+    rounds.value.forEach((round) => {
+      round.selectedHorses = [...horses.value].sort(() => Math.random() - 0.5).slice(0, 10)
     })
   }
 
-  return { horses, results, rounds, currentRound, selectedTenHorses, raceStarted, generateHorses, startRace, sortedHorses, generateProgram }
+  return {
+    horses,
+    results,
+    rounds,
+    currentRound,
+    raceStarted,
+    startRace,
+    generateProgram,
+  }
 })
