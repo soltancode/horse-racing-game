@@ -10,6 +10,8 @@ const buttonText = computed(() => (raceStore.raceStarted ? 'Pause' : 'Start'));
 const handleGenerateProgram = () => {
     raceStore.generateProgram();
 
+    raceStore.currentRound = 0;
+
     raceStore.results = [
     { round: 1, winnerHorses: [] },
     { round: 2, winnerHorses: [] },
