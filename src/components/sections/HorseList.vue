@@ -1,11 +1,17 @@
 <script setup>
 import { useRaceStore } from '@/stores/raceStore.js';
+
+// Access race data from the Pinia store
 const raceStore = useRaceStore();
 </script>
 
 <template>
   <div class="col-span-1 overflow-scroll bg-gray-50 py-3 px-2 rounded-lg">
-    <span class="font-semibold text-lg">Horse List <span class="text-xs">(1 - 20)</span></span>
+    <!-- Title of the horse list panel -->
+    <span class="font-semibold text-lg">
+      Horse List <span class="text-xs">(1 - 20)</span>
+    </span>
+
     <div class="horse-list overflow-y-scroll">
       <table class="min-w-full divide-y divide-gray-300 mt-3">
         <thead>
@@ -16,10 +22,22 @@ const raceStore = useRaceStore();
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr v-for="(horse, index) in raceStore.horses" :key="index">
-            <td class="whitespace-nowrap py-2 text-left text-xs font-medium text-gray-900">{{ horse.name }}</td>
-            <td class="whitespace-nowrap py-2 text-center text-xs text-gray-500">{{ horse.condition }}</td>
-            <td class="whitespace-nowrap py-2 text-center text-xs text-gray-500">{{ horse.color }}</td>
+          <!-- Loop through all horses from the store -->
+          <tr v-for="horse in raceStore.horses" :key="horse.name">
+            <!-- Horse name -->
+            <td class="whitespace-nowrap py-2 text-left text-xs font-medium text-gray-900">
+              {{ horse.name }}
+            </td>
+
+            <!-- Horse condition (1-100) -->
+            <td class="whitespace-nowrap py-2 text-center text-xs text-gray-500">
+              {{ horse.condition }}
+            </td>
+
+            <!-- Unique color assigned to the horse -->
+            <td class="whitespace-nowrap py-2 text-center text-xs text-gray-500">
+              {{ horse.color }}
+            </td>
           </tr>
         </tbody>
       </table>
