@@ -1,73 +1,108 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import { useRaceStore } from '@/stores/raceStore.js';
-import { HORSE_FRAMES, ANIMATION_INTERVAL } from '@/constants/animation.js'; // Extracted constants
+import {
+  SPRITE_FRAME_COUNT,
+  SPRITE_FRAME_WIDTH,
+  SPRITE_FRAME_HEIGHT,
+  SPRITE_INTERVAL
+} from '@/constants/animation.js';
+import { MAX_PROGRESS } from '@/constants/race.js';
 
 const props = defineProps({
-    // 'start' determines horizontal position in percentage
-    start: Number,
+  // Horizontal progress of the horse (%)
+  start: Number,
 });
 
 const raceStore = useRaceStore();
+const isRunning = ref(false);
+let stopTimeout = null;
 
-// Store current frame index and current image for animation
-const currentIndex = ref(0);
-const currentHorseImage = ref(HORSE_FRAMES[0]);
-
-let interval = null;
+// CSS variable style binding
+const styleVars = computed(() => ({
+  '--frame-count': SPRITE_FRAME_COUNT,
+  '--frame-width': `${SPRITE_FRAME_WIDTH}px`,
+  '--frame-height': `${SPRITE_FRAME_HEIGHT}px`,
+  '--frame-duration': `${SPRITE_FRAME_COUNT * SPRITE_INTERVAL}ms`,
+  '--background-size': `${SPRITE_FRAME_WIDTH * SPRITE_FRAME_COUNT}px auto`,
+  '--end-position': `${-SPRITE_FRAME_WIDTH * SPRITE_FRAME_COUNT}px`,
+  top: '0',
+  left: `${props.start}%`,
+}));
 
 /**
- * Starts the horse animation by cycling through frame images.
- * Animation stops automatically when 'start' prop reaches 90 or more.
+ * Starts the sprite animation. Automatically stops when horse reaches finish.
  */
 const startAnimation = () => {
-    if (interval) clearInterval(interval);
+  isRunning.value = true;
 
-    interval = setInterval(() => {
-        currentIndex.value = (currentIndex.value + 1) % HORSE_FRAMES.length;
-        currentHorseImage.value = HORSE_FRAMES[currentIndex.value];
-
-        // Stop animation once horse is near the finish line
-        if (props.start >= 90) {
-            currentHorseImage.value = HORSE_FRAMES[0];
-            clearInterval(interval);
-        }
-    }, ANIMATION_INTERVAL);
+  if (props.start >= MAX_PROGRESS) {
+    stopTimeout = setTimeout(() => {
+      isRunning.value = false;
+    }, 300);
+  }
 };
 
-/**
- * Stops animation and resets to initial frame.
- */
 const stopAnimation = () => {
-    if (interval) {
-        clearInterval(interval);
-        currentIndex.value = 0;
-        currentHorseImage.value = HORSE_FRAMES[0];
-    }
+  isRunning.value = false;
+  clearTimeout(stopTimeout);
 };
 
-// Watch for changes in race status and start/stop animation accordingly
 watch(() => raceStore.raceStarted, (newVal) => {
-    newVal ? startAnimation() : stopAnimation();
+  newVal ? startAnimation() : stopAnimation();
 });
 
-// Start animation on mount if race is already active
+watch(() => props.start, (newVal) => {
+  if (newVal >= MAX_PROGRESS && isRunning.value) {
+    stopAnimation(); // Stop animation for this horse only
+  }
+});
+
 onMounted(() => {
-    if (raceStore.raceStarted) {
-        startAnimation();
-    }
+  if (raceStore.raceStarted) {
+    startAnimation();
+  }
 });
 
-// Ensure interval is cleared on component destroy
 onUnmounted(() => {
-    clearInterval(interval);
+  clearTimeout(stopTimeout);
 });
 </script>
 
 <template>
-    <!-- Horse icon positioned absolutely based on 'start' percentage -->
-    <div class="border-t-orange-400 horse flex items-center absolute" :style="{ top: '0', left: `${start}%` }">
-        <img :src="currentHorseImage" alt="Horse" class="w-10 h-10" />
-        <!-- 💡 TIP: Consider replacing with a sprite image using CSS background-position for smoother animation -->
-    </div>
+  <div class="horse absolute" :class="{ running: isRunning }" :style="styleVars">
+    <div class="horse-sprite" />
+  </div>
 </template>
+
+<style scoped>
+.horse {
+  width: var(--frame-width);
+  height: var(--frame-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.horse-sprite {
+  width: var(--frame-width);
+  height: var(--frame-height);
+  background-image: url('/horse/horse-sprite.png');
+  background-repeat: no-repeat;
+  background-size: var(--background-size);
+}
+
+.running .horse-sprite {
+  animation: runHorse steps(var(--frame-count)) infinite;
+  animation-duration: var(--frame-duration);
+}
+
+@keyframes runHorse {
+  from {
+    background-position: 0px;
+  }
+  to {
+    background-position: var(--end-position);
+  }
+}
+</style>

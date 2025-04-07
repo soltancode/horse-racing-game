@@ -1,2 +1,4 @@
-export const HORSE_FRAMES = Array.from({ length: 12 }, (_, i) => `/horse/${i + 1}.png`);
-export const ANIMATION_INTERVAL = 100; // in milliseconds
+export const SPRITE_FRAME_COUNT = 12;
+export const SPRITE_FRAME_WIDTH = 60;
+export const SPRITE_FRAME_HEIGHT = 40;
+export const SPRITE_INTERVAL = 100;
