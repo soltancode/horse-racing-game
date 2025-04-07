@@ -5,7 +5,8 @@ import {
   SPRITE_FRAME_COUNT,
   SPRITE_FRAME_WIDTH,
   SPRITE_FRAME_HEIGHT,
-  SPRITE_INTERVAL
+  SPRITE_INTERVAL,
+  SPRITE_STOP_DELAY
 } from '@/constants/animation.js';
 import { MAX_PROGRESS } from '@/constants/race.js';
 
@@ -39,7 +40,7 @@ const startAnimation = () => {
   if (props.start >= MAX_PROGRESS) {
     stopTimeout = setTimeout(() => {
       isRunning.value = false;
-    }, 300);
+    }, SPRITE_STOP_DELAY);
   }
 };
 

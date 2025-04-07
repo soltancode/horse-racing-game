@@ -18,3 +18,9 @@ export const RACE_TICK_INTERVAL = 200;
 
 // Maximum progress gain per tick
 export const MAX_TICK_INCREMENT = 5;
+
+// Default empty results structure for each round (used during program reset)
+export const DEFAULT_RESULTS = Array.from({ length: TOTAL_ROUNDS }, (_, i) => ({
+  round: i + 1,
+  winnerHorses: [],
+}));

@@ -9,3 +9,6 @@ export const SPRITE_FRAME_HEIGHT = 40;
 
 // Duration between each frame switch (ms)
 export const SPRITE_INTERVAL = 100;
+
+// Delay (in ms) before stopping the animation when horse finishes
+export const SPRITE_STOP_DELAY = 300;
